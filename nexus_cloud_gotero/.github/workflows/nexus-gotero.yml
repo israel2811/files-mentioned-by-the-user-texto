@@ -1,0 +1,50 @@
+name: NEXUS gotero
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "chatgpt | chunks | inventory"
+        required: true
+        default: "chatgpt"
+      input_path:
+        description: "Input folder inside repo"
+        required: true
+        default: "input"
+      output_path:
+        description: "Output folder inside repo"
+        required: true
+        default: "output"
+
+jobs:
+  run-gotero:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run selected NEXUS job
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ inputs.output_path }}"
+          if [ "${{ inputs.job }}" = "chatgpt" ]; then
+            python nexus_cloud_gotero/scripts/chatgpt_export_to_md.py --input "${{ inputs.input_path }}" --output "${{ inputs.output_path }}/chatgpt_md"
+          elif [ "${{ inputs.job }}" = "chunks" ]; then
+            python nexus_cloud_gotero/scripts/chunk_text_files.py --input "${{ inputs.input_path }}" --output "${{ inputs.output_path }}/chunks" --max-kb 500
+          elif [ "${{ inputs.job }}" = "inventory" ]; then
+            python nexus_cloud_gotero/scripts/inventory_md5.py --root "${{ inputs.input_path }}" --output "${{ inputs.output_path }}/inventario_completo.csv" --dupes "${{ inputs.output_path }}/duplicados_md5_verificados.csv" --hash
+          else
+            echo "Unknown job: ${{ inputs.job }}" >&2
+            exit 2
+          fi
+      - name: Commit outputs
+        run: |
+          git config user.name "nexus-gotero-bot"
+          git config user.email "nexus-gotero-bot@users.noreply.github.com"
+          git add "${{ inputs.output_path }}"
+          git commit -m "NEXUS gotero output: ${{ inputs.job }}" || echo "No changes"
+          git push
+

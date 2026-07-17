@@ -1,0 +1,27 @@
+# Outputs directory (contains files with secrets/API keys)
+outputs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# SQLite databases (large)
+*.sqlite
+*.db
+
+# ZIP archives
+*.zip

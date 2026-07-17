@@ -1,0 +1,23 @@
+{
+  "name": "NEXUS Core Devcontainer (Codespaces)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y pandoc sqlite3 texlive-xetex && python -m pip install --upgrade pip && pip install chromadb sentence-transformers PyPDF2 docx2txt bs4 requests selenium webdriver-manager",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "qwtel.sqlite-viewer",
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  },
+  "forwardPorts": [8000, 8501]
+}

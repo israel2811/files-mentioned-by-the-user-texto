@@ -1,0 +1,25 @@
+# PC performance optimization and MCP setup
+
+## Metadata
+- Source family: claude_desktop_code_sessions
+- Original path: `C:\Users\Dell\AppData\Roaming\Claude\claude-code-sessions\7d8c6052-d8bf-44fa-81a7-751db83a48c5\fa12e3a5-254b-48d3-8afe-64eda453c00f\local_6a0b2762-d90e-437e-9ba4-679197947576.json`
+- Raw copy: `G:\Mi unidad\04_CRUDOS_TROCEADOS\LIVE_CLAUDE_CODEX_RAW_20260607\claude_desktop_code_sessions\local_6a0b2762-d90e-437e-9ba4-679197947576.json`
+- Modified: 2026-06-07T08:29:16
+- Bytes: 999635
+- Session id: local_6a0b2762-d90e-437e-9ba4-679197947576
+- CLI session id: 51e1500f-156c-43e6-84cc-dbe52c65f450
+- Events total: 1
+- Non-message events: 0
+- JSON errors: 0
+
+## Transcript
+
+### 1. METADATA
+
+- title: PC performance optimization and MCP setup
+- sessionId: local_6a0b2762-d90e-437e-9ba4-679197947576
+- cliSessionId: 51e1500f-156c-43e6-84cc-dbe52c65f450
+- cwd: C:\Users\Dell\.claude
+- model: claude-opus-4-8
+- createdAt: 1780738750297
+- lastActivityAt: 1780842970271
