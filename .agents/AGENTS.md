@@ -16,3 +16,8 @@ These rules apply automatically to all agentic sessions running within this work
 ## 3. Host System Resource Optimization
 - **Low CPU Priority**: Keep Google Drive, OneDrive, and Dropbox sync processes set to `BelowNormal` or `Idle` priority on the host machine to maximize RAM and CPU availability.
 - **File Chunking**: Avoid reading raw JSON or HTML files larger than 600 KB in a single pass. Write a script to split them into small, manageable chunks before parsing.
+
+## 4. Browser Control (Brave / CDP)
+- **Persistent Remote Debugging**: Always assume Brave is launchable/listening on `--remote-debugging-port=50064`. The agent should connect via CDP to interact with the user's active profiles and active sessions for Google Drive, GitHub, and academic tools.
+- **Session Reuse**: Avoid creating clean or sandboxed browser profiles whenever possible; instead, leverage active user profile sessions to bypass authentication requirements (OAuth, 2FA).
+
