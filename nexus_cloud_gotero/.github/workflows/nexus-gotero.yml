@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: "chatgpt | chunks | inventory | zotero | power | audio"
+        description: "chatgpt | chunks | inventory | zotero | power | audio | gpu-hf"
         required: true
         default: "chatgpt"
       input_path:
@@ -47,6 +47,9 @@ jobs:
           elif [ "${{ inputs.job }}" = "audio" ]; then
             pip install edge-tts
             python work/tesis_a_audio.py
+          elif [ "${{ inputs.job }}" = "gpu-hf" ]; then
+            pip install requests
+            python work/hf_gpu_accelerator.py
           else
             echo "Unknown job: ${{ inputs.job }}" >&2
             exit 2
@@ -56,7 +59,6 @@ jobs:
           git config user.name "nexus-gotero-bot"
           git config user.email "nexus-gotero-bot@users.noreply.github.com"
           git add "${{ inputs.output_path }}"
-          # Also add any files generated in work/ or outputs/ outside output_path
           git add work/ outputs/ || true
           git commit -m "NEXUS gotero output: ${{ inputs.job }}" || echo "No changes"
           git push
