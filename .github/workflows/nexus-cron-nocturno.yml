@@ -1,0 +1,33 @@
+name: NEXUS Cron Nocturno (Nube)
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Se ejecuta automáticamente todos los días a medianoche (UTC)
+  workflow_dispatch:
+
+jobs:
+  ejecucion-nocturna:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependencias académicas
+        run: |
+          pip install --upgrade pip
+          pip install statsmodels pandas numpy scipy duckdb
+      - name: Sincronizar referencias y compilar tesis
+        run: |
+          python work/import_zotero.py || true
+          python work/auto_power_analysis.py || true
+          python work/extract_priorities.py || true
+      - name: Guardar y commitear cambios
+        run: |
+          git config user.name "nexus-cron-bot"
+          git config user.email "nexus-cron-bot@users.noreply.github.com"
+          git add outputs/ work/ || true
+          git commit -m "NEXUS Cron Nocturno: Sincronización y Compilación Automática" || echo "Sin cambios"
+          git push
