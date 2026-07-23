@@ -3,7 +3,12 @@ import re
 from pathlib import Path
 
 WORKSPACE_OUT = Path(r"c:\Users\Dell\Documents\Codex\2026-06-07\files-mentioned-by-the-user-texto\outputs\conversaciones_completas")
-OUTPUT_FILE = Path(r"C:\Users\Dell\.gemini\antigravity-ide\brain\d12f6ed3-dcff-4940-98a2-8621009a2906\priorities_and_next_steps.md")
+if not WORKSPACE_OUT.exists():
+    WORKSPACE_OUT = Path("outputs/conversaciones_completas")
+
+OUTPUT_FILE = Path(r"c:\Users\Dell\Documents\Codex\2026-06-07\files-mentioned-by-the-user-texto\outputs\CONSOLIDADO_PRIORIDADES_TODOS_LOS_CHATS.md")
+if not OUTPUT_FILE.parent.exists():
+    OUTPUT_FILE = Path("outputs/CONSOLIDADO_PRIORIDADES_TODOS_LOS_CHATS.md")
 
 def extract():
     results = []
