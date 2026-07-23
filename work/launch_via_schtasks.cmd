@@ -1,0 +1,6 @@
+@echo off
+echo Creating scheduled task to force execution on interactive user session...
+schtasks /create /tn "NEXUS_Launcher_Task" /tr "\"c:\Users\Dell\Documents\Codex\2026-06-07\files-mentioned-by-the-user-texto\ABRIR_TODAS_LAS_CUENTAS.bat\"" /sc once /st 23:59 /f
+schtasks /run /tn "NEXUS_Launcher_Task"
+echo Task executed. Cleaning up...
+schtasks /delete /tn "NEXUS_Launcher_Task" /f
