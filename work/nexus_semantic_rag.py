@@ -19,7 +19,8 @@ class NexusSemanticRAG:
     - Thesis manuscripts and epidemiology tables
     """
 
-    def __init__(self):
+    def __init__(self, db_path=None, *args, **kwargs):
+        self.db_path = db_path
         self.indexed_documents = []
 
     def index_all_sources(self):
