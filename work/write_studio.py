@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+
+import pathlib, textwrap
+
+HTML = r"""<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -444,4 +447,8 @@ function exportChat(){
 }
 </script>
 </body>
-</html>
+</html>"""
+
+out = pathlib.Path(r"c:\Users\Dell\Documents\Codex\2026-06-07\files-mentioned-by-the-user-texto\work\NEXUS_MULTI_AI_CHAT_STUDIO.html")
+out.write_text(HTML, encoding="utf-8")
+print(f"OK — escrito {out.stat().st_size:,} bytes en {out}")
