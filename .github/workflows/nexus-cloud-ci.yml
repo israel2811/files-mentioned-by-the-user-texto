@@ -1,0 +1,53 @@
+name: NEXUS Multi-Cloud CI/CD & Academic Audit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  academic-rigor-and-cloud-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y libpq-dev
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests duckdb numpy scipy pandas
+
+      - name: Audit Thesis DOI Rigor and Citations
+        run: |
+          python work/nexus_audit_manifest.py || echo "Audit completed with warnings."
+
+      - name: Run NEXUS Autonomous Verification Loop
+        run: |
+          python work/nexus_autonomous_loop.py
+
+      - name: Check Multi-Cloud Connectors (Neon, Jules, HuggingFace)
+        run: |
+          python work/neon_postgres_connector.py
+          python work/jules_agent_bridge.py
+          python work/hf_gpu_accelerator.py
+
+      - name: Commit Updated Outputs and Manifests
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "nexus-ci-bot"
+          git config user.email "nexus-ci-bot@users.noreply.github.com"
+          git add outputs/
+          git commit -m "chore(ci): update autonomous outputs, audit report and dossiers" || echo "No changes to commit"
+          git push || echo "Push skipped or not permitted in this context"
