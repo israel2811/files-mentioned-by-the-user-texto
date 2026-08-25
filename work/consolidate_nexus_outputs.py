@@ -136,9 +136,21 @@ Antigravity produjo y fue bancado en `02_TESIS` para P01/P02. En P02 propuso una
 
 def main() -> int:
     TESIS.mkdir(parents=True, exist_ok=True)
+    FUENTES.mkdir(parents=True, exist_ok=True)
     fuente_md = FUENTES / "00_FUENTES_CORE_APA7_CCA_AAV_2026-06-07.md"
-    manuscrito_md = TESIS / "MANUSCRITO_TESIS_CCA_AAV_M0_M13_v2_2026-06-07.md"
-    base = read_text(manuscrito_md)
+    manuscrito_candidates = [
+        TESIS / "MANUSCRITO_TESIS_CCA_AAV_M0_M13_v2_2026-06-07.md",
+        WORKSPACE / "work" / "MANUSCRITO_TESIS_CCA_AAV_M0_M17_v4_EXPANSION_MECANISTICA.md",
+        WORKSPACE / "work" / "MANUSCRITO_TESIS_CCA_AAV_M0_M13_v2_raw.md"
+    ]
+    base = ""
+    for candidate in manuscrito_candidates:
+        if candidate.exists():
+            base = read_text(candidate)
+            break
+    if not base:
+        base = "# Manuscrito de Tesis CCA-AAV\n\nContenido base en compilación."
+        
     consolidated = append_antigravity_section(base)
     out_md = TESIS / f"MANUSCRITO_TESIS_CCA_AAV_M0_M13_v4_CONSOLIDADO_2026-06-08.md"
     out_docx = TESIS / f"MANUSCRITO_TESIS_CCA_AAV_M0_M13_v4_CONSOLIDADO_2026-06-08.docx"
