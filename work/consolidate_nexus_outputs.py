@@ -10,7 +10,9 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 
-DRIVE = Path(r"G:\Mi unidad")
+DRIVE_DEFAULT = Path(r"G:\Mi unidad")
+WORKSPACE = Path(__file__).resolve().parent.parent
+DRIVE = DRIVE_DEFAULT if DRIVE_DEFAULT.exists() else (WORKSPACE / "outputs")
 TESIS = DRIVE / "02_TESIS"
 FUENTES = DRIVE / "03_FUENTES"
 STAMP = datetime.now().strftime("%Y-%m-%d %H:%M")
