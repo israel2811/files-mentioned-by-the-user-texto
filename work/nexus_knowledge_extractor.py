@@ -12,7 +12,7 @@ EXTRACTED_KNOWLEDGE_FILE = OUTPUT_DIR / "nexus_extracted_knowledge.json"
 
 def extract_categories_from_text(text, source_name="unknown"):
     """
-    Extracts knowledge items into 7 structured categories:
+    Extracts knowledge items into 7 structured categories using fast linear streaming:
     1. Prompts
     2. Respuestas
     3. Errores / Tracebacks
@@ -31,26 +31,44 @@ def extract_categories_from_text(text, source_name="unknown"):
         "resultados": []
     }
 
-    # Code blocks
-    code_blocks = re.findall(r'```(?:[a-zA-Z0-9]+)?\n(.*?)```', text, re.DOTALL)
-    for code in code_blocks:
-        if len(code.strip()) > 10:
-            categories["codigo"].append({"source": source_name, "content": code.strip()})
+    in_code = False
+    current_code = []
 
-    # Error / tracebacks
-    error_matches = re.findall(r'(?:Error|Exception|Traceback|FAILED|Acceso denegado|FAILED)[^\n]*', text, re.IGNORECASE)
-    for err in error_matches:
-        categories["errores"].append({"source": source_name, "content": err.strip()})
+    for line in text.splitlines():
+        trimmed = line.strip()
+        if not trimmed:
+            continue
 
-    # Hypotheses tagged with [POR-VALIDAR]
-    hypotheses = re.findall(r'[^\n]*\[POR-VALIDAR\][^\n]*', text)
-    for hyp in hypotheses:
-        categories["ideas_hipotesis"].append({"source": source_name, "content": hyp.strip()})
+        # Code block tracking
+        if trimmed.startswith("```"):
+            if in_code:
+                in_code = False
+                if current_code and len(current_code) < 300:
+                    code_str = "\n".join(current_code).strip()
+                    if len(code_str) > 10:
+                        categories["codigo"].append({"source": source_name, "content": code_str[:500]})
+                current_code = []
+            else:
+                in_code = True
+            continue
 
-    # DOIs / Scientific claims
-    doi_claims = re.findall(r'[^\n]*DOI:\s*10\.\d{4,9}/[-._;()/:A-Z0-9]+[^\n]*', text, re.IGNORECASE)
-    for claim in doi_claims:
-        categories["resultados"].append({"source": source_name, "content": claim.strip()})
+        if in_code:
+            if len(current_code) < 100:
+                current_code.append(line)
+            continue
+
+        # Error tracking
+        lower_line = trimmed.lower()
+        if any(w in lower_line for w in ["traceback", "failed", "exception", "acceso denegado"]) and len(trimmed) < 200:
+            categories["errores"].append({"source": source_name, "content": trimmed})
+
+        # Hypotheses tagged with [POR-VALIDAR]
+        if "[por-validar]" in lower_line:
+            categories["ideas_hipotesis"].append({"source": source_name, "content": trimmed[:300]})
+
+        # DOIs / Scientific claims
+        if "doi:" in lower_line or "10." in lower_line and "doi" in lower_line:
+            categories["resultados"].append({"source": source_name, "content": trimmed[:300]})
 
     return categories
 
