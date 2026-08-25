@@ -73,7 +73,7 @@ def run_extraction():
     # 1. Parse Codex local session logs
     codex_sessions_dir = Path(os.environ.get("USERPROFILE", r"C:\Users\Dell")) / ".codex" / "sessions"
     if codex_sessions_dir.exists():
-        for jsonl_path in list(codex_sessions_dir.rglob("*.jsonl"))[:15]:
+        for jsonl_path in list(codex_sessions_dir.rglob("*.jsonl"))[:25]:
             try:
                 content = jsonl_path.read_text(encoding="utf-8", errors="ignore")
                 cats = extract_categories_from_text(content, source_name=f"Codex:{jsonl_path.name}")
@@ -81,6 +81,18 @@ def run_extraction():
                     extracted_db["data"][key].extend(cats[key])
             except Exception as e:
                 print(f"[!] Error leyendo {jsonl_path}: {e}")
+
+    # 1b. Parse outputs/conversaciones_completas/*.md
+    convs_dir = OUTPUT_DIR / "conversaciones_completas"
+    if convs_dir.exists():
+        for md_file in convs_dir.glob("*.md"):
+            try:
+                content = md_file.read_text(encoding="utf-8", errors="ignore")
+                cats = extract_categories_from_text(content, source_name=f"Conversacion:{md_file.name}")
+                for key in cats:
+                    extracted_db["data"][key].extend(cats[key])
+            except Exception as e:
+                print(f"[!] Error leyendo {md_file}: {e}")
 
     # 2. Parse Thesis manuscript and Epidemiology tables
     manuscript_path = WORK_DIR / "MANUSCRITO_TESIS_CCA_AAV_M0_M17_v4_EXPANSION_MECANISTICA.md"
